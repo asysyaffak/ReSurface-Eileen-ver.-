@@ -8,19 +8,17 @@
 import SwiftUI
 
 struct SelectPlayerView: View {
+    @Environment(Router.self) var router
     @Bindable var gameState: GameState
     var body: some View {
         ZStack {
             Image("selectPlayer")
                 .resizable()
                 .ignoresSafeArea()
-            
             VStack(spacing: 40) {
                 Text("Enter Player")
-                    .font(.largeTitle)
-                    .bold()
-                    .foregroundStyle(Color("titleColor"))
-                
+                    .font(.largeTitle.bold())
+                    .foregroundStyle(Color.appTitle)
                 LazyVGrid(
                     columns: [
                         GridItem(.flexible()),
@@ -29,7 +27,6 @@ struct SelectPlayerView: View {
                     spacing: 16
                 ) {
                     ForEach(0..<4, id: \.self) { index in
-
                         PlayerCard(
                             title: "Player \(index + 1)",
                             name: $gameState.names[index]
@@ -42,14 +39,9 @@ struct SelectPlayerView: View {
                     x: 0,
                     y: 4)
                 .padding(.horizontal)
-                
                 Button {
-                    let filteredNames = gameState.names.filter {
-                        !$0.isEmpty
-                    }
-                    gameState.startGame(
-                        names: filteredNames
-                    )
+                    gameState.startGame()
+                    router.push(.mainGame)
                 } label: {
                     Text("Let's Go")
                         .font(.title2)
@@ -62,18 +54,9 @@ struct SelectPlayerView: View {
             .padding(40)
         }
         .toolbar {
-            ToolbarItem(placement: .topBarLeading) {
-                Button {
-                    gameState.screen = .onboarding
-                } label: {
-                    Image(systemName: "chevron.backward")
-                }
-            }
             ToolbarItem(placement: .topBarTrailing) {
                 Button {
-                    gameState.navigate(
-                        to: .instruction
-                    )
+                    router.push(.instruction)
                 } label: {
                     Image(systemName: "questionmark")
                 }
@@ -97,14 +80,12 @@ struct PlayerCard: View {
             ZStack {
                 if name.isEmpty {
                     Text("Enter name")
-                        .font(.body)
-                        .bold()
+                        .font(.body.bold())
                         .foregroundStyle(Color("captionColor2"))
                 }
                 TextField("", text: $name)
-                    .font(.title3)
-                    .bold()
-                    .foregroundStyle(Color("titleColor"))
+                    .font(.title3.bold())
+                    .foregroundStyle(Color.appTitle)
                     .multilineTextAlignment(.center)
             }
         }
@@ -116,5 +97,6 @@ struct PlayerCard: View {
 }
 
 #Preview {
-    SelectPlayerView( gameState: GameState())
+    SelectPlayerView(gameState: GameState())
+        .environment(Router())
 }

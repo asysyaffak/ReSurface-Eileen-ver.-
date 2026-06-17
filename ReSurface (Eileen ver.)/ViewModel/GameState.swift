@@ -7,34 +7,10 @@
 
 import Foundation
 import Observation
-
-enum Screen {
-    case onboarding
-    case instruction
-    case statistic
-    case selectPlayer
-    case mainGame
-    case selectCard
-    case question
-    case completed
-    case statisticCompleted
-}
+import Combine
 
 @Observable
-class GameState {
-    // MARK: Screen
-    var screen: Screen = .onboarding
-    var previousScreen: Screen?
-    func navigate(to newScreen: Screen) {
-        previousScreen = screen
-        screen = newScreen
-    }
-    func goBack() {
-        guard let previousScreen else {
-            return
-        }
-        screen = previousScreen
-    }
+class GameState: ObservableObject {
     // MARK: Player
     var players: [Player] = []
     var names = ["", "", "", ""]
@@ -53,21 +29,17 @@ class GameState {
         }
         return players[currentPlayerIndex]
     }
-    func startGame(names: [String]) {
-        players = names.map {
+    func startGame() {
+        let filteredNames = names.filter {
+            !$0.isEmpty
+        }
+        players = filteredNames.map {
             Player(name: $0)
         }
         currentPlayerIndex = 0
-        screen = .mainGame
     }
     func nextTurn() {
-        if totalScore >= targetScore {
-            screen = .completed
-            return
-        }
         currentPlayerIndex = (currentPlayerIndex + 1) % players.count
-        selectedLevel = nil
-        currentQuestion = nil
     }
     func resetGame() {
         names = ["", "", "", ""]
@@ -97,7 +69,6 @@ class GameState {
         default:
             break
         }
-        screen = .question
     }
     func finishQuestion() {
         guard let level = selectedLevel else {
@@ -115,7 +86,6 @@ class GameState {
             points = 0
         }
         players[currentPlayerIndex].score += points
-        screen = .mainGame
     }
     // MARK: Elaborate
     var elaborateState = 3

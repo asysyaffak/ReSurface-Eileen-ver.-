@@ -8,22 +8,20 @@
 import SwiftUI
 
 struct SelectCardView: View {
+    @Environment(Router.self) var router
     @Bindable var gameState: GameState
     var body: some View {
         ZStack {
-            Color("bgColor")
+            Color.background1
                 .ignoresSafeArea()
             VStack() {
                 Text("\nYour turn!")
-                    .font(.title2)
-                    .bold()
-                    .foregroundStyle(Color("titleColor"))
+                    .font(.title2.bold())
+                    .foregroundStyle(Color.appTitle)
                 Text("Select a card")
-                    .font(.largeTitle)
-                    .bold()
-                    .foregroundStyle(Color("titleColor"))
+                    .font(.largeTitle.bold())
+                    .foregroundStyle(Color.appTitle)
                 Spacer()
-                
                 LazyVGrid(
                     columns: [
                         GridItem(.flexible()),
@@ -37,6 +35,7 @@ struct SelectCardView: View {
                             .onTapGesture {
                                 gameState.selectLevel(index + 1)
                                 gameState.resetElaborate()
+                                router.push(.question)
                             }
                     }
                 }
@@ -57,18 +56,9 @@ struct SelectCardView: View {
             .padding(.vertical)
         }
         .toolbar {
-            ToolbarItem(placement: .topBarLeading) {
-                Button {
-                    gameState.screen = .mainGame
-                } label: {
-                    Image(systemName: "chevron.backward")
-                }
-            }
             ToolbarItem(placement: .topBarTrailing) {
                 Button {
-                    gameState.navigate(
-                        to: .instruction
-                    )
+                    router.push(.instruction)
                 } label: {
                     Image(systemName: "questionmark")
                 }
@@ -82,9 +72,8 @@ struct LevelCardView: View {
     var body: some View {
         VStack {
             Text(level)
-                .font(.largeTitle)
-                .bold()
-                .foregroundStyle(Color("titleColor"))
+                .font(.largeTitle.bold())
+                .foregroundStyle(Color.appTitle)
         }
         .padding()
         .frame(maxWidth: .infinity, minHeight: 180)

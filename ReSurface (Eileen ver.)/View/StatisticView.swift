@@ -16,9 +16,8 @@ struct StatisticView: View {
                 .ignoresSafeArea()
             VStack {
                 Text("Statistics")
-                    .font(.largeTitle)
-                    .bold()
-                    .foregroundStyle(Color("titleColor2"))
+                    .font(.largeTitle.bold())
+                    .foregroundStyle(Color.appTitle2)
                 VStack {
                     ForEach(Array(gameState.players.enumerated()), id: \.element.id) { index, player in
                         VStack {
@@ -29,7 +28,7 @@ struct StatisticView: View {
                                 VStack(alignment: .leading) {
                                     Text(player.name)
                                         .font(.body)
-                                        .foregroundStyle(Color("titleColor"))
+                                        .foregroundStyle(Color.appTitle)
                                     Text("Player \(index + 1)")
                                         .font(.subheadline)
                                         .foregroundStyle(Color("captionColor"))
@@ -52,24 +51,6 @@ struct StatisticView: View {
                 .clipShape(RoundedRectangle(cornerRadius: 25))
             }
             .padding()
-        }
-        .toolbar {
-            ToolbarItem(placement: .topBarLeading) {
-                Button {
-                    gameState.screen = .mainGame
-                } label: {
-                    Image(systemName: "chevron.backward")
-                }
-            }
-            ToolbarItem(placement: .topBarTrailing) {
-                Button {
-                    gameState.navigate(
-                        to: .instruction
-                    )
-                } label: {
-                    Image(systemName: "questionmark")
-                }
-            }
         }
     }
 }
