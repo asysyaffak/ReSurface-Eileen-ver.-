@@ -8,14 +8,14 @@
 import SwiftUI
 
 struct OnboardingView: View {
-    @Bindable var gameState: GameState
+    @Environment(Router.self) var router
     var body: some View {
         ZStack {
             Image("onboarding")
                 .resizable()
                 .ignoresSafeArea()
             Button {
-                gameState.screen = .selectPlayer
+                router.push(.selectPlayer)
             } label: {
                 Text("Let's Go")
                     .font(.title)
@@ -29,9 +29,7 @@ struct OnboardingView: View {
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 Button {
-                    gameState.navigate(
-                        to: .instruction
-                    )
+                    router.push(.instruction)
                 } label: {
                     Image(systemName: "questionmark")
                 }
@@ -41,5 +39,5 @@ struct OnboardingView: View {
 }
 
 #Preview {
-    OnboardingView(gameState: GameState())
+    OnboardingView()
 }

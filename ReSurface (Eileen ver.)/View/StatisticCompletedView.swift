@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct StatisticCompletedView: View {
+    @Environment(Router.self) var router
     @Bindable var gameState: GameState
     var body: some View {
         ZStack {
@@ -16,9 +17,8 @@ struct StatisticCompletedView: View {
                 .ignoresSafeArea()
             VStack {
                 Text("Statistics")
-                    .font(.largeTitle)
-                    .bold()
-                    .foregroundStyle(Color("titleColor"))
+                    .font(.largeTitle.bold())
+                    .foregroundStyle(Color.appTitle)
                 VStack {
                     ForEach(Array(gameState.players.enumerated()), id: \.element.id) { index, player in
                         VStack {
@@ -29,7 +29,7 @@ struct StatisticCompletedView: View {
                                 VStack(alignment: .leading) {
                                     Text(player.name)
                                         .font(.body)
-                                        .foregroundStyle(Color("titleColor"))
+                                        .foregroundStyle(Color.appTitle)
                                     Text("Player \(index + 1)")
                                         .font(.subheadline)
                                         .foregroundStyle(Color("captionColor"))
@@ -54,18 +54,9 @@ struct StatisticCompletedView: View {
             .padding()
         }
         .toolbar {
-            ToolbarItem(placement: .topBarLeading) {
-                Button {
-                    gameState.screen = .completed
-                } label: {
-                    Image(systemName: "chevron.backward")
-                }
-            }
             ToolbarItem(placement: .topBarTrailing) {
                 Button {
-                    gameState.navigate(
-                        to: .instruction
-                    )
+                    router.push(.instruction)
                 } label: {
                     Image(systemName: "questionmark")
                 }

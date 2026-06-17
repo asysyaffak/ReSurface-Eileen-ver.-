@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct CompletedView: View {
+    @Environment(Router.self) var router
     @Bindable var gameState: GameState
     var body: some View {
         ZStack {
@@ -17,18 +18,17 @@ struct CompletedView: View {
             VStack (spacing: 120) {
                 VStack (spacing: 24) {
                     Text("Congratulations!")
-                        .font(.largeTitle)
-                        .bold()
-                        .foregroundStyle(Color("titleColor"))
+                        .font(.largeTitle.bold())
+                        .foregroundStyle(Color.appTitle)
                     Text("Mission complete! You all crushed those challenges.")
                         .font(.title2)
                         .fontWeight(.medium)
-                        .foregroundStyle(Color("titleColor"))
+                        .foregroundStyle(Color.appTitle)
                         .padding(.horizontal, 60)
                 }
                 VStack (spacing: 9) {
                     Button {
-                        gameState.screen = .statisticCompleted
+                        router.push(.statisticCompleted)
                     } label: {
                         Text("View Statistics")
                             .font(.title3)
@@ -38,7 +38,7 @@ struct CompletedView: View {
                     .buttonStyle(.glassProminent)
                     Button {
                         gameState.resetGame()
-                        gameState.screen = .selectPlayer
+                        router.push(.selectPlayer)
                     } label: {
                         Text("Play Again")
                             .font(.title3)
@@ -52,14 +52,13 @@ struct CompletedView: View {
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 Button {
-                    gameState.navigate(
-                        to: .instruction
-                    )
+                    router.push(.instruction)
                 } label: {
                     Image(systemName: "questionmark")
                 }
             }
         }
+        .navigationBarBackButtonHidden()
     }
 }
 

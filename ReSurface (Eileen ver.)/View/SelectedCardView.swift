@@ -8,24 +8,25 @@
 import SwiftUI
 
 struct SelectedCardView: View {
+    @Environment(Router.self) var router
     @Bindable var gameState: GameState
     var body: some View {
         ZStack {
             switch gameState.elaborateState {
             case 3:
-                Color("bgColor")
+                Color.background1
                     .ignoresSafeArea()
             case 2:
-                Color("bgColor2")
+                Color.background2
                     .ignoresSafeArea()
             case 1:
-                Color("bgColor3")
+                Color.background3
                     .ignoresSafeArea()
             case 0:
-                Color("bgColor4")
+                Color.background4
                     .ignoresSafeArea()
             default:
-                Color("bgColor")
+                Color.background1
                     .ignoresSafeArea()
             }
             VStack(spacing : 40) {
@@ -33,40 +34,35 @@ struct SelectedCardView: View {
                 switch gameState.elaborateState {
                 case 3:
                     Text("\nYou selected…")
-                        .font(.largeTitle)
-                        .bold()
-                        .foregroundStyle(Color("titleColor"))
+                        .font(.largeTitle.bold())
+                        .foregroundStyle(Color.appTitle)
                 case 2:
                     Text("\nTell us more!")
-                        .font(.largeTitle)
-                        .bold()
-                        .foregroundStyle(Color("titleColor2"))
+                        .font(.largeTitle.bold())
+                        .foregroundStyle(Color.appTitle2)
                 case 1:
                     Text("\nGo a bit deeper?")
-                        .font(.largeTitle)
-                        .bold()
-                        .foregroundStyle(Color("titleColor2"))
+                        .font(.largeTitle.bold())
+                        .foregroundStyle(Color.appTitle2)
                 case 0:
                     Text("Last one, \n make it count!")
-                        .font(.largeTitle)
-                        .bold()
-                        .foregroundStyle(Color("titleColor2"))
+                        .font(.largeTitle.bold())
+                        .foregroundStyle(Color.appTitle2)
                         .multilineTextAlignment(.center)
                 default:
                     Text("\nYou selected…")
-                        .font(.largeTitle)
-                        .bold()
-                        .foregroundStyle(Color("titleColor"))
+                        .font(.largeTitle.bold())
+                        .foregroundStyle(Color.appTitle)
                 }
                 VStack (spacing: 16) {
                     Text("Level \(gameState.selectedLevel ?? 0)")
                         .font(.callout)
                         .fontWeight(.medium)
-                        .foregroundStyle(Color("titleColor"))
+                        .foregroundStyle(Color.appTitle)
                     Text("\(gameState.currentQuestion?.text ?? "Question")")
                         .font(.title2)
                         .fontWeight(.medium)
-                        .foregroundStyle(Color("titleColor"))
+                        .foregroundStyle(Color.appTitle)
                         .multilineTextAlignment(.center)
                 }
                 .padding(.horizontal)
@@ -95,12 +91,12 @@ struct SelectedCardView: View {
                             Text("Limit: \(gameState.elaborateState)")
                                 .font(.caption)
                                 .fontWeight(.semibold)
-                                .foregroundStyle(Color("titleColor"))
+                                .foregroundStyle(Color.appTitle)
                         } else {
                             Text("Limit: \(gameState.elaborateState)")
                                 .font(.caption)
                                 .fontWeight(.semibold)
-                                .foregroundStyle(Color("titleColor2"))
+                                .foregroundStyle(Color.appTitle2)
                         }
                     }
                     VStack {
@@ -115,6 +111,11 @@ struct SelectedCardView: View {
                         Button {
                             gameState.finishQuestion()
                             gameState.nextTurn()
+                            if gameState.totalScore >= gameState.targetScore {
+                                router.push(.completed)
+                            } else {
+                                router.push(.mainGame)
+                            }
                         } label: {
                             Text("Continue")
                                 .font(.body)
@@ -131,14 +132,13 @@ struct SelectedCardView: View {
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 Button {
-                    gameState.navigate(
-                        to: .instruction
-                    )
+                    router.push(.instruction)
                 } label: {
                     Image(systemName: "questionmark")
                 }
             }
         }
+        .navigationBarBackButtonHidden()
     }
 }
 
